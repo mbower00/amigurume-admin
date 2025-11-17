@@ -5,6 +5,10 @@ export const useUserStore = defineStore('user', () => {
   const access = ref(null)
   const username = ref(null)
   const authHeader = computed(() => `Bearer ${access.value}`)
+  function logout() {
+    access.value = null
+    username.value = null
+  }
 
-  return { access, username, authHeader }
+  return { access, username, authHeader, logout }
 })

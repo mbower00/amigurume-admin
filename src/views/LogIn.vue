@@ -4,7 +4,7 @@
 <script setup>
 import { ref } from 'vue'
 import { noWhiteSpace, required } from '@/helpers/rules'
-import { loginUser, authCall } from '@/helpers/api'
+import { loginUser, authCall, refreshUser, logoutUser } from '@/helpers/api'
 import { useUserStore } from '@/stores/user'
 
 const userStore = useUserStore()
@@ -43,6 +43,12 @@ async function two() {
       type: 'tail',
     }),
   )
+}
+async function three() {
+  console.log(await refreshUser())
+}
+async function logout() {
+  console.log(await logoutUser())
 }
 </script>
 
@@ -84,6 +90,8 @@ async function two() {
   </v-container>
   <v-btn @click="one">get products (user)</v-btn>
   <v-btn @click="two">post product (admin)</v-btn>
+  <v-btn @click="three">refresh</v-btn>
+  <v-btn @click="logout">logout</v-btn>
   <span>username: {{ userStore.username }}</span>
 </template>
 
