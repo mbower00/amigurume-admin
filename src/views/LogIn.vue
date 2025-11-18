@@ -4,8 +4,9 @@
 <script setup>
 import { ref } from 'vue'
 import { noWhiteSpace, required } from '@/helpers/rules'
-import { loginUser, authCall, refreshUser, logoutUser } from '@/helpers/api'
+import { loginUser, authCall, logoutUser } from '@/helpers/api'
 import { useUserStore } from '@/stores/user'
+import { useRouter, useRoute } from 'vue-router'
 
 const userStore = useUserStore()
 const username = ref('')
@@ -14,14 +15,20 @@ const isValid = ref(null)
 const isLoading = ref(null)
 const errorMessage = ref(null)
 const viewPassword = ref(false)
+const router = useRouter()
+const route = useRoute()
 
 async function login() {
   if (!isValid.value || isLoading.value) return
   isLoading.value = true
   errorMessage.value = null
   try {
-    const { data } = await loginUser(username.value, password.value)
-    console.log(data)
+    await loginUser(username.value, password.value)
+    if (route.redirectedFrom) {
+      router.push(route.redirectedFrom)
+    } else {
+      router.push('/orders')
+    }
   } catch (error) {
     errorMessage.value = error.message
   } finally {
@@ -30,11 +37,11 @@ async function login() {
 }
 
 async function one() {
-  console.log(await authCall('/products'))
+  console.log(await authCall('/products', router))
 }
 async function two() {
   console.log(
-    await authCall('/product', 'post', {
+    await authCall('/product', router, 'post', {
       name: 'Dragon Tail',
       stock: 5,
       price: 4.99,
@@ -45,10 +52,13 @@ async function two() {
   )
 }
 async function three() {
-  console.log(await refreshUser())
+  console.log(await loginUser())
+}
+async function four() {
+  userStore.username = null
 }
 async function logout() {
-  console.log(await logoutUser())
+  console.log(await logoutUser(router))
 }
 </script>
 
@@ -92,6 +102,8 @@ async function logout() {
   <v-btn @click="two">post product (admin)</v-btn>
   <v-btn @click="three">refresh</v-btn>
   <v-btn @click="logout">logout</v-btn>
+  <v-btn @click="four">clear user store</v-btn>
+  <router-link to="/orders">orders</router-link>
   <span>username: {{ userStore.username }}</span>
 </template>
 
