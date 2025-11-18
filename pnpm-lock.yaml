@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@fontsource/molle':
+        specifier: ^5.2.8
+        version: 5.2.8
       '@fontsource/roboto':
         specifier: ^5.2.8
         version: 5.2.8
@@ -340,6 +343,9 @@ packages:
     engines: {node: '>=18'}
     cpu: [x64]
     os: [win32]
+
+  '@fontsource/molle@5.2.8':
+    resolution: {integrity: sha512-bnUkmZfJNJEA9cwwJ6UAE3ZFnF66bQ6HAlAEfVIL/pItA2PUol3NnWZtDH96fh1aXaJb93n0cD6Yeg64w7B/eA==}
 
   '@fontsource/roboto@5.2.8':
     resolution: {integrity: sha512-oh9g4Cg3loVMz9MWeKWfDI+ooxxG1aRVetkiKIb2ESS2rrryGecQ/y4pAj4z5A5ebyw450dYRi/c4k/I3UBhHA==}
@@ -1364,6 +1370,8 @@ snapshots:
 
   '@esbuild/win32-x64@0.25.12':
     optional: true
+
+  '@fontsource/molle@5.2.8': {}
 
   '@fontsource/roboto@5.2.8': {}
 

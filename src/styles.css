@@ -1,4 +1,17 @@
 :root {
   --error-background: #fee;
   --light-grey: #bbb;
+  /* five colors below from https://coolors.co/07020d-91f5ad-8b9eb7-745296-632a50 */
+  --text: #07020d;
+  --green: #91f5ad;
+  --steel: #8b9eb7;
+  --lilac: #745296;
+  --blackberry: #632a50;
+
+  color: var(--text);
+}
+
+.fancy-font {
+  /* using code copied from https://fonts.google.com/selection/embed */
+  font-family: 'Molle', cursive;
 }

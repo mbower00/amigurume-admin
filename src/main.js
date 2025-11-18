@@ -8,6 +8,9 @@ import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 
+// using code from https://fontsource.org/fonts/molle/install
+import '@fontsource/molle/400-italic.css'
+
 import 'unfonts.css'
 import 'vuetify/styles'
 import './styles.css'

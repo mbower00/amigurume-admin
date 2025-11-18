@@ -25,10 +25,10 @@ async function requireAuth() {
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    { path: '/login', component: LogIn },
-    { path: '/orders', component: Orders, beforeEnter: requireAuth },
-    { path: '/products', component: Products, beforeEnter: requireAuth },
-    { path: '/users', component: Users, beforeEnter: requireAuth },
+    { path: '/login', name: 'login', component: LogIn },
+    { path: '/orders', name: 'orders', component: Orders, beforeEnter: requireAuth },
+    { path: '/products', name: 'products', component: Products, beforeEnter: requireAuth },
+    { path: '/users', name: 'users', component: Users, beforeEnter: requireAuth },
     // using code from https://router.vuejs.org/guide/essentials/dynamic-matching.html#Catch-all-404-Not-found-Route
     { path: '/:anything(.*)', redirect: '/orders' },
   ],
