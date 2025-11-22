@@ -35,31 +35,6 @@ async function login() {
     isLoading.value = false
   }
 }
-
-async function one() {
-  console.log(await authCall('/products', router))
-}
-async function two() {
-  console.log(
-    await authCall('/product', router, 'post', {
-      name: 'Dragon Tail',
-      stock: 5,
-      price: 4.99,
-      description: 'A green dragon plushie tail.',
-      image_url: 'https://picsum.photos/200/300',
-      type: 'tail',
-    }),
-  )
-}
-async function three() {
-  console.log(await loginUser())
-}
-async function four() {
-  userStore.username = null
-}
-async function logout() {
-  console.log(await logoutUser(router))
-}
 </script>
 
 <template>
@@ -98,13 +73,6 @@ async function logout() {
       </v-container>
     </v-card>
   </v-container>
-  <v-btn @click="one">get products (user)</v-btn>
-  <v-btn @click="two">post product (admin)</v-btn>
-  <v-btn @click="three">refresh</v-btn>
-  <v-btn @click="logout">logout</v-btn>
-  <v-btn @click="four">clear user store</v-btn>
-  <router-link to="/orders">orders</router-link>
-  <span>username: {{ userStore.username }}</span>
 </template>
 
 <style scoped>

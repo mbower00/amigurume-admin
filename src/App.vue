@@ -19,5 +19,6 @@ const route = useRoute()
 .view {
   position: fixed;
   height: 100vh;
+  width: 100%;
 }
 </style>

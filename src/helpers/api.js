@@ -70,14 +70,14 @@ export async function authCall(route, router, method = 'get', body = null, recur
   }
   try {
     // attempt authenticated call
-    const { data } = await axios({
+    const res = await axios({
       baseURL,
       method,
       url: route,
       data: body,
       headers: { Authorization: userStore.authHeader },
     })
-    return data
+    return res.data
   } catch (error) {
     if (error.response.status === 401) {
       // access token did not work
@@ -92,7 +92,8 @@ export async function authCall(route, router, method = 'get', body = null, recur
       // refresh worked
       if (!recurred) {
         // recur this function (only once)
-        return await authCall(route, router, method, body, true)
+        const res = await authCall(route, router, method, body, true)
+        return res.data
       } else {
         throw error
       }
