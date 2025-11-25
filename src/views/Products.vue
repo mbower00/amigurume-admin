@@ -4,6 +4,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { authCall } from '@/helpers/api'
 import { useRouter } from 'vue-router'
+import ProductRow from '@/components/ProductRow.vue'
 
 const router = useRouter()
 const products = ref(null)
@@ -35,8 +36,9 @@ function editProduct(index) {
   console.log(index)
 }
 
-function stockOne(index) {
-  console.log(index)
+function stockOne(id, stock) {
+  const index = products.value.findIndex((product) => product.id === id)
+  products.value[index].stock = stock
 }
 
 function submitForm() {
@@ -63,33 +65,32 @@ function clearForm() {
       <v-skeleton-loader type="list-item-avatar"></v-skeleton-loader>
       <v-skeleton-loader type="list-item-avatar"></v-skeleton-loader>
     </div>
-    <div class="products" v-else>
-      <v-card v-for="(product, index) in products">
-        <template #text>
-          <div class="flex">
-            <img class="product-img" :src="product.image_url" :alt="product.name" />
-            <div>
-              <div class="title">
-                <h3>
-                  {{ product.name }}
-                </h3>
-                <span class="chip type">{{ product.type }}</span>
-                <span class="chip price">${{ product.price }}</span>
-                <span class="chip stock">{{ product.stock }} in stock</span>
-              </div>
-              <div class="description">
-                {{ product.description }}
-              </div>
-              <div class="flex btns">
-                <v-btn density="compact" variant="outlined" @click="editProduct(index)">edit</v-btn>
-                <v-btn density="compact" variant="outlined" @click="stockOne(index)"
-                  >stock one</v-btn
-                >
-              </div>
+    <div v-else>
+      <v-expansion-panels class="panels">
+        <v-expansion-panel hide-actions readonly>
+          <v-expansion-panel-title>
+            <div class="title-grid">
+              <span>Name</span>
+              <span>Type</span>
+              <span>Price</span>
+              <span>Stock</span>
+              <span></span>
             </div>
-          </div>
-        </template>
-      </v-card>
+          </v-expansion-panel-title>
+        </v-expansion-panel>
+        <product-row
+          v-for="(product, index) in products"
+          :product
+          @edit-product="editProduct(index)"
+          @stock-one="stockOne"
+        ></product-row>
+        <order-row
+          v-for="(order, index) in orders"
+          :order
+          @fulfilled-changed="changeFulfilled"
+          @order-deleted="deleteOrder"
+        ></order-row>
+      </v-expansion-panels>
     </div>
     <div v-if="types === null">
       <v-skeleton-loader type="heading"></v-skeleton-loader>
@@ -98,11 +99,11 @@ function clearForm() {
       <v-skeleton-loader type="heading"></v-skeleton-loader>
       <v-skeleton-loader type="heading"></v-skeleton-loader>
     </div>
-    <v-card v-else>
+    <v-card class="form-card" v-else>
       <template #text>
         <v-form class="form" v-model="isValid" @submit.prevent="submitForm">
           <v-text-field v-model="name" label="Name" :rules="[]" variant="outlined"></v-text-field>
-          <div class="flex">
+          <div class="price-stock-flex">
             <v-number-input
               v-model="price"
               label="Price"
@@ -154,53 +155,51 @@ function clearForm() {
 </template>
 
 <style scoped>
+.title-grid {
+  font-size: 14px;
+  display: grid;
+  grid-template-columns: 1fr 0.5fr 0.5fr 0.5fr 0.2fr;
+  gap: 10px;
+  width: 100%;
+  font-weight: bold;
+  align-items: center;
+}
 .container {
   display: grid;
   grid-template-columns: 1.5fr 1fr;
   gap: 20px;
+  max-width: 1400px;
 }
-.form {
+.form-card {
   height: fit-content;
-}
-.products {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  position: sticky;
+  top: 70px;
+  max-width: 600px;
+  justify-self: center;
+  width: 100%;
 }
 .flex {
   display: flex;
   gap: 16px;
 }
-.product-img {
-  width: 60px;
-  height: 100%;
-  border-radius: 4px;
-}
-.title {
+.price-stock-flex {
   display: flex;
-  gap: 10px;
-  align-items: center;
+  gap: 16px;
 }
-.chip {
-  padding: 2px 10px;
-  border-radius: 20px;
+
+@media (max-width: 850px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+  .form-card {
+    position: initial;
+    grid-row-start: 1;
+  }
 }
-.type {
-  background-color: var(--blackberry);
-  color: white;
-}
-.price {
-  background-color: var(--green);
-  color: var(--text);
-}
-.stock {
-  background-color: var(--steel);
-  color: white;
-}
-.description {
-  margin-top: 10px;
-}
-.btns {
-  margin-top: 10px;
+@media (max-width: 500px) {
+  .price-stock-flex {
+    flex-direction: column;
+    gap: 0;
+  }
 }
 </style>

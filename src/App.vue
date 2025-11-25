@@ -12,13 +12,9 @@ const route = useRoute()
 </template>
 
 <style scoped>
-/* TODO: POSITIONING */
 .nav-bar {
   position: sticky;
-}
-.view {
-  position: fixed;
-  height: 100vh;
-  width: 100%;
+  top: 0px;
+  z-index: 10;
 }
 </style>

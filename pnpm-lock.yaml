@@ -14,6 +14,9 @@ importers:
       '@fontsource/roboto':
         specifier: ^5.2.8
         version: 5.2.8
+      '@fortawesome/fontawesome-free':
+        specifier: ^7.1.0
+        version: 7.1.0
       axios:
         specifier: ^1.13.2
         version: 1.13.2
@@ -349,6 +352,10 @@ packages:
 
   '@fontsource/roboto@5.2.8':
     resolution: {integrity: sha512-oh9g4Cg3loVMz9MWeKWfDI+ooxxG1aRVetkiKIb2ESS2rrryGecQ/y4pAj4z5A5ebyw450dYRi/c4k/I3UBhHA==}
+
+  '@fortawesome/fontawesome-free@7.1.0':
+    resolution: {integrity: sha512-+WxNld5ZCJHvPQCr/GnzCTVREyStrAJjisUPtUxG5ngDA8TMlPnKp6dddlTpai4+1GNmltAeuk1hJEkBohwZYA==}
+    engines: {node: '>=6'}
 
   '@jridgewell/gen-mapping@0.3.13':
     resolution: {integrity: sha512-2kkt/7niJ6MgEPxF0bYdQ6etZaA+fQvDcLKckhy1yIQOzaoKjBBjSj63/aLVjYE3qhRt5dvM+uUyfCg6UKCBbA==}
@@ -1374,6 +1381,8 @@ snapshots:
   '@fontsource/molle@5.2.8': {}
 
   '@fontsource/roboto@5.2.8': {}
+
+  '@fortawesome/fontawesome-free@7.1.0': {}
 
   '@jridgewell/gen-mapping@0.3.13':
     dependencies:

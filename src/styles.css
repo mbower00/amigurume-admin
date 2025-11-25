@@ -1,12 +1,14 @@
 :root {
   --error-background: #fee;
   --light-grey: #bbb;
-  /* five colors below from https://coolors.co/07020d-91f5ad-8b9eb7-745296-632a50 */
+  /* some colors below from https://coolors.co/07020d-91f5ad-8b9eb7-745296-632a50 */
   --text: #07020d;
   --green: #91f5ad;
+  --dark-green: #229442;
   --steel: #8b9eb7;
   --lilac: #745296;
   --blackberry: #632a50;
+  --light-blackberry: #911668;
 
   color: var(--text);
 }

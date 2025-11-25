@@ -27,7 +27,7 @@ async function changeClearance(id, clearance) {
 </script>
 
 <template>
-  <v-container>
+  <v-container class="container">
     <div v-if="users === null">
       <v-skeleton-loader type="table-tbody"></v-skeleton-loader>
     </div>
@@ -53,4 +53,8 @@ async function changeClearance(id, clearance) {
   </v-container>
 </template>
 
-<style scoped></style>
+<style scoped>
+.container {
+  max-width: 1400px;
+}
+</style>
