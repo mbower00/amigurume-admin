@@ -38,7 +38,6 @@ async function changeClearance(id, clearance) {
             <th>Username</th>
             <th>Email</th>
             <th>Clearance</th>
-            <th></th>
           </tr>
         </thead>
         <tbody>

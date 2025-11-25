@@ -29,15 +29,28 @@ async function changeClearance() {
   <tr>
     <td>{{ prop.user.username }}</td>
     <td>{{ prop.user.email }}</td>
-    <td>
-      {{ prop.user.clearance }}
-    </td>
-    <td>
-      <v-btn @click="changeClearance" :loading="loading" variant="plain"
-        >set to {{ prop.user.clearance === 'admin' ? 'user' : 'admin' }}</v-btn
-      >
+    <td class="flex">
+      <div>
+        {{ prop.user.clearance }}
+      </div>
+      <v-btn
+        @click="changeClearance"
+        :loading="loading"
+        variant="plain"
+        :icon="
+          prop.user.clearance === 'admin' ? 'fa-solid fa-user-minus' : 'fa-solid fa-user-shield'
+        "
+        size="x-small"
+        v-tooltip="prop.user.clearance === 'admin' ? 'Set to User' : 'Set to Admin'"
+      ></v-btn>
     </td>
   </tr>
 </template>
 
-<style scoped></style>
+<style scoped>
+.flex {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+</style>
