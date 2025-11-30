@@ -27,20 +27,20 @@ async function deleteOrder(id, reload) {
   }
 }
 
-function addP() {
-  authCall(`/order`, router, 'post', {
-    ordered_products: [
-      {
-        id: 1,
-        quantity: 1,
-      },
-    ],
-  })
-}
+// function addP() {
+//   authCall(`/order`, router, 'post', {
+//     ordered_products: [
+//       {
+//         id: 1,
+//         quantity: 1,
+//       },
+//     ],
+//   })
+// }
 </script>
 
 <template>
-  <v-btn @click="addP">add</v-btn>
+  <!-- <v-btn @click="addP">add</v-btn> -->
 
   <v-container class="container">
     <div v-if="orders === null">
