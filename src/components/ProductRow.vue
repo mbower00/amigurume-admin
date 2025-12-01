@@ -5,13 +5,16 @@ import { useRouter } from 'vue-router'
 import { authCall } from '@/helpers/api'
 
 const router = useRouter()
-// TODO DISABLE ON FORM LOADING
-const prop = defineProps(['product'])
-const emits = defineEmits(['editProduct', 'stockOne'])
+const prop = defineProps(['product', 'disable', 'editing'])
+const emits = defineEmits(['editProduct', 'stockOne', 'cancelEdit'])
 const stockOneLoading = ref(false)
 
 function editProduct() {
   emits('editProduct')
+}
+
+function cancelEdit() {
+  emits('cancelEdit')
 }
 
 async function stockOne() {
@@ -29,7 +32,7 @@ async function stockOne() {
 </script>
 
 <template>
-  <v-expansion-panel hide-actions>
+  <v-expansion-panel :class="{ highlight: prop.editing }" hide-actions>
     <v-expansion-panel-title>
       <div class="title-grid">
         <span>{{ prop.product.name }}</span>
@@ -39,9 +42,10 @@ async function stockOne() {
           <div>
             {{ prop.product.stock }}
           </div>
-          <!-- TODO: DISABLE WHEN EDITING? -->
           <v-btn
             @click.stop="stockOne"
+            :disabled="prop.disable"
+            v-show="!prop.editing"
             :loading="stockOneLoading"
             variant="plain"
             icon="fas fa-plus"
@@ -50,8 +54,18 @@ async function stockOne() {
           ></v-btn>
         </div>
         <v-btn
+          v-if="prop.editing"
+          @click.stop="cancelEdit"
+          :disabled="stockOneLoading || prop.disable"
+          variant="plain"
+          icon="fas fa-x"
+          size="x-small"
+          v-tooltip="'Cancel Edit'"
+        ></v-btn>
+        <v-btn
+          v-else
           @click.stop="editProduct"
-          :disabled="stockOneLoading"
+          :disabled="stockOneLoading || prop.disable"
           variant="plain"
           icon="fas fa-edit"
           size="x-small"
@@ -92,5 +106,8 @@ async function stockOne() {
   width: 60px;
   height: 100%;
   border-radius: 4px;
+}
+.highlight {
+  background-color: var(--light-lilac);
 }
 </style>

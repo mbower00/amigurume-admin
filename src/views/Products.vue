@@ -4,16 +4,22 @@
 import { ref, onMounted, computed } from 'vue'
 import { authCall } from '@/helpers/api'
 import { useRouter } from 'vue-router'
+import { required } from '@/helpers/rules'
 import ProductRow from '@/components/ProductRow.vue'
 
 const router = useRouter()
+const isEditing = ref(false)
+const productEditing = ref(null)
 const products = ref(null)
 const types = ref(null)
 const isValid = ref(null)
+const formLoading = ref(false)
+// form refs
 const name = ref(null)
 const price = ref(null)
 const stock = ref(null)
 const description = ref(null)
+const imagePreview = ref(null)
 const image = ref(null)
 const type = ref(null)
 
@@ -22,7 +28,6 @@ onMounted(async () => {
   const resTypes = authCall('/product/types', router)
   products.value = await resProducts
   types.value = await resTypes
-  console.log(products.value, types.value)
 })
 
 const typesList = computed(() => {
@@ -32,17 +37,23 @@ const typesList = computed(() => {
   return []
 })
 
-function editProduct(index) {
-  console.log(index)
+function editProduct(id) {
+  // window.scrollTo(0, 0)
+  const index = products.value.findIndex((product) => product.id === id)
+  isEditing.value = true
+  productEditing.value = products.value[index]
+  name.value = productEditing.value.name
+  price.value = productEditing.value.price
+  stock.value = productEditing.value.stock
+  description.value = productEditing.value.description
+  imagePreview.value = productEditing.value.image_url
+  image.value = null
+  type.value = productEditing.value.type
 }
 
 function stockOne(id, stock) {
   const index = products.value.findIndex((product) => product.id === id)
   products.value[index].stock = stock
-}
-
-function submitForm() {
-  console.log(description.value)
 }
 
 function clearForm() {
@@ -53,6 +64,51 @@ function clearForm() {
   description.value = null
   image.value = null
   type.value = null
+}
+
+function fullClearForm() {
+  isEditing.value = false
+  productEditing.value = null
+  imagePreview.value = null
+  clearForm()
+}
+
+function cancelEdit() {
+  // window.scrollTo(0, 0)
+  fullClearForm()
+}
+
+async function submitForm() {
+  formLoading.value = true
+  // get google photos link
+  const body = {
+    name: name.value,
+    price: price.value,
+    stock: stock.value,
+    description: description.value,
+    image_url: 'https://picsum.photos/200/300',
+    type: type.value,
+  }
+  try {
+    if (isEditing.value) {
+      // edit product
+      const id = productEditing.value.id
+      await authCall(`/product/${id}`, router, 'patch', body)
+      const index = products.value.findIndex((product) => product.id === id)
+      body.id = id
+      products.value[index] = body
+    } else {
+      // add product
+      const { id } = await authCall('/product', router, 'post', body)
+      body.id = id
+      products.value.push(body)
+    }
+  } catch (error) {
+    console.log(error)
+  } finally {
+    formLoading.value = false
+    fullClearForm()
+  }
 }
 </script>
 
@@ -79,17 +135,14 @@ function clearForm() {
           </v-expansion-panel-title>
         </v-expansion-panel>
         <product-row
-          v-for="(product, index) in products"
+          v-for="product in products"
           :product
-          @edit-product="editProduct(index)"
+          :disable="formLoading"
+          @edit-product="editProduct(product.id)"
           @stock-one="stockOne"
+          @cancel-edit="cancelEdit"
+          :editing="product.id === productEditing?.id"
         ></product-row>
-        <order-row
-          v-for="(order, index) in orders"
-          :order
-          @fulfilled-changed="changeFulfilled"
-          @order-deleted="deleteOrder"
-        ></order-row>
       </v-expansion-panels>
     </div>
     <div v-if="types === null">
@@ -99,16 +152,29 @@ function clearForm() {
       <v-skeleton-loader type="heading"></v-skeleton-loader>
       <v-skeleton-loader type="heading"></v-skeleton-loader>
     </div>
-    <v-card class="form-card" v-else>
+    <v-card
+      :loading="formLoading"
+      :class="{ 'form-card': true, 'form-highlight': isEditing }"
+      v-else
+    >
       <template #text>
         <v-form class="form" v-model="isValid" @submit.prevent="submitForm">
-          <v-text-field v-model="name" label="Name" :rules="[]" variant="outlined"></v-text-field>
+          <div class="form-title">
+            {{ isEditing ? `Edit ${productEditing?.name}` : 'Add Product' }}
+          </div>
+          <div class="form-note">* required</div>
+          <v-text-field
+            v-model="name"
+            label="Name *"
+            :rules="[required]"
+            variant="solo"
+          ></v-text-field>
           <div class="price-stock-flex">
             <v-number-input
               v-model="price"
-              label="Price"
-              :rules="[]"
-              variant="outlined"
+              label="Price *"
+              :rules="[required]"
+              variant="solo"
               control-variant="hidden"
               prepend-inner-icon="fas fa-dollar-sign"
               :precision="2"
@@ -116,37 +182,49 @@ function clearForm() {
             </v-number-input>
             <v-number-input
               v-model="stock"
-              label="Stock"
-              :rules="[]"
-              variant="outlined"
+              label="Stock *"
+              :rules="[required]"
+              variant="solo"
               control-variant="hidden"
               prepend-inner-icon="fas fa-cubes"
             >
             </v-number-input>
           </div>
-          <v-textarea
-            v-model="description"
-            label="Description"
-            :rules="[]"
-            variant="outlined"
-          ></v-textarea>
+          <v-textarea v-model="description" label="Description" variant="solo"></v-textarea>
+          <div v-if="imagePreview" class="image-preview-div">
+            <img class="image-preview" :src="imagePreview" alt="Product image preview" />
+          </div>
           <v-file-input
             prepend-icon="fas fa-image"
             v-model="image"
             label="Image"
-            :rules="[]"
-            variant="outlined"
+            variant="solo"
           ></v-file-input>
           <v-combobox
             v-model="type"
-            label="Type"
-            :rules="[]"
+            label="Type *"
+            :rules="[required]"
             :items="typesList"
-            variant="outlined"
+            variant="solo"
           ></v-combobox>
           <div class="flex">
-            <v-btn type="submit" variant="flat" color="var(--green)">Submit</v-btn>
-            <v-btn @click="clearForm" variant="outlined">clear</v-btn>
+            <v-btn
+              type="submit"
+              :disabled="!isValid"
+              :loading="formLoading"
+              variant="flat"
+              color="var(--green)"
+              >submit</v-btn
+            >
+            <v-btn @click="clearForm" variant="outlined" :disabled="formLoading">clear</v-btn>
+            <v-btn
+              style="margin-left: auto"
+              variant="outlined"
+              v-if="isEditing"
+              :disabled="formLoading"
+              @click="cancelEdit"
+              >cancel edit</v-btn
+            >
           </div>
         </v-form>
       </template>
@@ -173,11 +251,20 @@ function clearForm() {
 .form-card {
   height: fit-content;
   position: sticky;
-  top: 70px;
+  top: 82px;
   max-width: 600px;
   justify-self: center;
   width: 100%;
+  /* border: white 4px dashed; */
 }
+/* .form-highlight {
+  border: var(--mid-lilac) 4px dashed;
+} */
+/* .form {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+} */
 .flex {
   display: flex;
   gap: 16px;
@@ -186,8 +273,36 @@ function clearForm() {
   display: flex;
   gap: 16px;
 }
+.form-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: rgb(118, 118, 118);
+}
+.form-note {
+  color: rgb(118, 118, 118);
+  margin-bottom: 16px;
+  font-size: smaller;
+}
+.image-preview-div {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+.image-preview {
+  width: inherit;
+  height: 100px;
+  border-radius: 4px;
+}
 
-@media (max-width: 850px) {
+@media (max-height: 820px) {
+  .form-card {
+    position: relative;
+    top: 0;
+  }
+}
+
+@media (max-width: 1000px) {
   .container {
     grid-template-columns: 1fr;
   }

@@ -17,5 +17,9 @@ function getTime(date) {
   if (hour > 12) {
     hour -= 12
   }
+  // zero padding on minute
+  if (minute < 10) {
+    minute = `0${minute}`
+  }
   return `${hour}:${minute} ${suffix}`
 }
