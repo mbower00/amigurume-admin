@@ -1,7 +1,11 @@
 import axios from 'axios'
 import { useUserStore } from '@/stores/user'
 
-const baseURL = '/api'
+// DEVTODO:
+// use this for dev
+// const baseURL = '/api'
+// use this for prod
+const baseURL = 'https://api.amigurume.me'
 
 export async function loginUser(username = null, password = null) {
   const userStore = useUserStore()
