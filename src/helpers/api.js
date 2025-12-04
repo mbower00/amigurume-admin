@@ -15,10 +15,15 @@ export async function loginUser(username = null, password = null) {
       // using code copied from ChatGPT https://chatgpt.com/c/691342fc-371c-832d-8eb1-71fcadf5972f
       response = await axios.get(`${baseURL}/user/refresh`, { withCredentials: true })
     } else {
-      response = await axios.post(`${baseURL}/user/log-in`, {
-        username,
-        password,
-      })
+      // using code copied from ChatGPT https://chatgpt.com/c/6931f18d-5adc-832b-9dfd-92684712c285
+      response = await axios.post(
+        `${baseURL}/user/log-in`,
+        {
+          username,
+          password,
+        },
+        { withCredentials: true },
+      )
     }
   } catch (error) {
     throw new Error(error.response.data.message)
