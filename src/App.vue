@@ -9,6 +9,7 @@ const route = useRoute()
   <div class="view">
     <router-view></router-view>
   </div>
+  <!-- TODO: add alert for error/success, if time -->
 </template>
 
 <style scoped>

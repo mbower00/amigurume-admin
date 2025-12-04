@@ -15,14 +15,10 @@ const types = ref(null)
 const isValid = ref(null)
 const formLoading = ref(false)
 // form refs
-// const name = ref(null)
-// const price = ref(null)
-// const stock = ref(null)
-// const type = ref(null)
-const name = ref(1)
-const type = ref('tail')
-const price = ref(1)
-const stock = ref(1)
+const name = ref(null)
+const price = ref(null)
+const stock = ref(null)
+const type = ref(null)
 const description = ref(null)
 const image = ref(null)
 
@@ -34,7 +30,6 @@ onMounted(async () => {
 })
 
 const imagePreview = computed(() => {
-  console.log(image.value)
   if (image.value) {
     // using code from https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input/file
     return URL.createObjectURL(image.value)
