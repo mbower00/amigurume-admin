@@ -41,7 +41,7 @@ export async function logoutUser(router) {
   try {
     // attempt to log out both tokens
     // using code copied from ChatGPT for this axios.get(...) call https://chatgpt.com/c/691342fc-371c-832d-8eb1-71fcadf5972f
-    await axios.get(`${baseURL}user/log-out`, {
+    await axios.get(`${baseURL}/user/log-out`, {
       headers: {
         withCredentials: true,
         Authorization: userStore.authHeader,
@@ -53,7 +53,7 @@ export async function logoutUser(router) {
     // try again without access token
     try {
       // using code copied from ChatGPT for this axios.get(...) call https://chatgpt.com/c/691342fc-371c-832d-8eb1-71fcadf5972f
-      await axios.get(`${baseURL}user/log-out`, {
+      await axios.get(`${baseURL}/user/log-out`, {
         headers: { withCredentials: true },
       })
     } catch (errorTwo) {
