@@ -75,7 +75,12 @@ async function stockOne() {
     </v-expansion-panel-title>
     <v-expansion-panel-text>
       <div class="img-description-flex">
-        <img class="product-img" :src="product.image_url" :alt="product.name" />
+        <img
+          class="product-img"
+          :src="product.image_url"
+          :alt="product.name"
+          v-if="product.image_url"
+        />
         <span>{{ prop.product.description }}</span>
       </div>
     </v-expansion-panel-text>

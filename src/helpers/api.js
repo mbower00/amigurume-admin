@@ -57,7 +57,14 @@ export async function logoutUser(router) {
   }
 }
 
-export async function authCall(route, router, method = 'get', body = null, recurred = false) {
+export async function authCall(
+  route,
+  router,
+  method = 'get',
+  body = null,
+  headers = {},
+  recurred = false,
+) {
   const userStore = useUserStore()
   // ensure the user is logged in
   if (!userStore.isLoggedIn) {
@@ -75,7 +82,7 @@ export async function authCall(route, router, method = 'get', body = null, recur
       method,
       url: route,
       data: body,
-      headers: { Authorization: userStore.authHeader },
+      headers: { Authorization: userStore.authHeader, ...headers },
     })
     return res.data
   } catch (error) {
@@ -92,7 +99,7 @@ export async function authCall(route, router, method = 'get', body = null, recur
       // refresh worked
       if (!recurred) {
         // recur this function (only once)
-        const res = await authCall(route, router, method, body, true)
+        const res = await authCall(route, router, method, body, headers, true)
         return res.data
       } else {
         throw error

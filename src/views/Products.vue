@@ -1,7 +1,7 @@
 <!-- using code from https://vuetifyjs.com/en/components/text-fields/#forms -->
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { authCall } from '@/helpers/api'
 import { useRouter } from 'vue-router'
 import { required } from '@/helpers/rules'
@@ -15,19 +15,34 @@ const types = ref(null)
 const isValid = ref(null)
 const formLoading = ref(false)
 // form refs
-const name = ref(null)
-const price = ref(null)
-const stock = ref(null)
+// const name = ref(null)
+// const price = ref(null)
+// const stock = ref(null)
+// const type = ref(null)
+const name = ref(1)
+const type = ref('tail')
+const price = ref(1)
+const stock = ref(1)
 const description = ref(null)
-const imagePreview = ref(null)
 const image = ref(null)
-const type = ref(null)
 
 onMounted(async () => {
   const resProducts = authCall('/products', router)
   const resTypes = authCall('/product/types', router)
   products.value = await resProducts
   types.value = await resTypes
+})
+
+const imagePreview = computed(() => {
+  console.log(image.value)
+  if (image.value) {
+    // using code from https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input/file
+    return URL.createObjectURL(image.value)
+  }
+  if (isEditing.value) {
+    return productEditing.value.image_url
+  }
+  return null
 })
 
 const typesList = computed(() => {
@@ -41,12 +56,11 @@ function editProduct(id) {
   // window.scrollTo(0, 0)
   const index = products.value.findIndex((product) => product.id === id)
   isEditing.value = true
-  productEditing.value = products.value[index]
+  productEditing.value = JSON.parse(JSON.stringify(products.value[index]))
   name.value = productEditing.value.name
   price.value = productEditing.value.price
   stock.value = productEditing.value.stock
   description.value = productEditing.value.description
-  imagePreview.value = productEditing.value.image_url
   image.value = null
   type.value = productEditing.value.type
 }
@@ -69,7 +83,6 @@ function clearForm() {
 function fullClearForm() {
   isEditing.value = false
   productEditing.value = null
-  imagePreview.value = null
   clearForm()
 }
 
@@ -78,15 +91,38 @@ function cancelEdit() {
   fullClearForm()
 }
 
+function removeEditingImage() {
+  if (image.value) {
+    image.value = null
+  } else if (isEditing.value) {
+    productEditing.value.image_url = null
+  }
+}
+
 async function submitForm() {
   formLoading.value = true
-  // get google photos link
+  let image_url = null
+  if (image.value) {
+    const form = new FormData()
+    form.append('image', image.value)
+    try {
+      const data = await authCall('product/image', router, 'post', form)
+      image_url = data.image_url
+    } catch (error) {
+      console.log(error)
+      formLoading.value = false
+      // fullClearForm()
+      return
+    }
+  } else if (isEditing.value) {
+    image_url = productEditing.value.image_url
+  }
   const body = {
     name: name.value,
     price: price.value,
     stock: stock.value,
     description: description.value,
-    image_url: 'https://picsum.photos/200/300',
+    image_url,
     type: type.value,
   }
   try {
@@ -193,8 +229,21 @@ async function submitForm() {
           <v-textarea v-model="description" label="Description" variant="solo"></v-textarea>
           <div v-if="imagePreview" class="image-preview-div">
             <img class="image-preview" :src="imagePreview" alt="Product image preview" />
+            <v-btn
+              @click="removeEditingImage"
+              :disabled="fulfillLoading"
+              :loading="deleteLoading"
+              variant="plain"
+              icon="fas fa-x"
+              size="x-small"
+            ></v-btn>
           </div>
+          <!-- using code from: 
+           - https://vuetifyjs.com/en/components/file-inputs/#validation
+           - https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input/file 
+          -->
           <v-file-input
+            accept="image/png, image/jpeg"
             prepend-icon="fas fa-image"
             v-model="image"
             label="Image"
