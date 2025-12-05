@@ -30,7 +30,6 @@ export default defineConfig({
     },
   },
   // server attribute code copied from ChatGPT https://chatgpt.com/c/691342fc-371c-832d-8eb1-71fcadf5972f
-  // TODO: "In production, set secure: true once you're confident the certificate is good." (quote from ChatGPT https://chatgpt.com/c/691342fc-371c-832d-8eb1-71fcadf5972f)
   // server: {
   //   proxy: {
   //     '/api': {
