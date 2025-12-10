@@ -1,7 +1,16 @@
 <script setup>
 import NavBar from './components/NavBar.vue'
 import { useRoute } from 'vue-router'
+import { onMounted } from 'vue'
+import { loginUser } from './helpers/api'
 const route = useRoute()
+
+onMounted(async () => {
+  try {
+    // refresh tokens upon mount (refresh)
+    await loginUser()
+  } catch {}
+})
 </script>
 
 <template>

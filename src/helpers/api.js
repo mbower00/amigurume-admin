@@ -26,7 +26,7 @@ export async function loginUser(username = null, password = null) {
       )
     }
   } catch (error) {
-    throw new Error(error.response.data.message)
+    throw new Error(error?.response?.data?.message)
   }
   if (response.data.clearance !== 'admin') {
     throw new Error('You must be an admin to access this site.')
