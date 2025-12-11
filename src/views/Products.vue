@@ -148,7 +148,7 @@ async function submitForm() {
 function addTypeToForm(type) {
   const findType = types.value.findIndex((typeItem) => typeItem === type)
   if (findType === -1) {
-    type.value.push(type)
+    types.value.push(type)
   }
 }
 </script>
