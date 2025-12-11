@@ -2,6 +2,7 @@
 
 export function required(value) {
   // copied from https://vuetifyjs.com/en/components/forms/#rules
+  if (value === 0) return true
   if (value) return true
   return 'This is required.'
 }
