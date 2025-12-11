@@ -109,7 +109,7 @@ export async function authCall(
       if (!recurred) {
         // recur this function (only once)
         const res = await authCall(route, router, method, body, headers, true)
-        return res.data
+        return res
       } else {
         throw error
       }
