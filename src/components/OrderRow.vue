@@ -145,9 +145,8 @@ async function deleteOrder() {
   align-items: center;
 }
 .product-img {
-  height: 100%;
+  height: auto;
   width: 40px;
-  border-radius: 10px;
   padding: 5px;
 }
 </style>
