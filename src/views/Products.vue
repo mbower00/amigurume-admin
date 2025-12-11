@@ -4,7 +4,7 @@
 import { ref, onMounted, computed, watch } from 'vue'
 import { authCall } from '@/helpers/api'
 import { useRouter } from 'vue-router'
-import { required } from '@/helpers/rules'
+import { required, notOnlyWhiteSpace } from '@/helpers/rules'
 import ProductRow from '@/components/ProductRow.vue'
 
 const router = useRouter()
@@ -12,7 +12,7 @@ const isEditing = ref(false)
 const productEditing = ref(null)
 const products = ref(null)
 const types = ref(null)
-const isValid = ref(null)
+const isValid = ref(false)
 const formLoading = ref(false)
 // form refs
 const name = ref(null)
@@ -66,13 +66,14 @@ function stockOne(id, stock) {
 }
 
 function clearForm() {
-  isValid.value = null
   name.value = null
   price.value = null
   stock.value = null
   description.value = null
   image.value = null
   type.value = null
+  // This should go last?
+  isValid.value = false
 }
 
 function fullClearForm() {
@@ -209,7 +210,7 @@ function addTypeToForm(type) {
           <v-text-field
             v-model="name"
             label="Name *"
-            :rules="[required]"
+            :rules="[required notOnlyWhiteSpace]"
             variant="solo"
           ></v-text-field>
           <div class="price-stock-flex">
@@ -259,7 +260,7 @@ function addTypeToForm(type) {
           <v-combobox
             v-model="type"
             label="Type *"
-            :rules="[required]"
+            :rules="[required, notOnlyWhiteSpace]"
             :items="typesList"
             variant="solo"
           ></v-combobox>
