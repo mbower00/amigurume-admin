@@ -12,7 +12,7 @@ const isEditing = ref(false)
 const productEditing = ref(null)
 const products = ref(null)
 const types = ref(null)
-const isValid = ref(false)
+// const isValid = ref(false)
 const formLoading = ref(false)
 // form refs
 const name = ref(null)
@@ -21,6 +21,17 @@ const stock = ref(null)
 const type = ref(null)
 const description = ref(null)
 const image = ref(null)
+
+const isValid = computed(() => {
+  return (
+    required(name.value) === true &&
+    notOnlyWhiteSpace(name.value) === true &&
+    required(price.value) === true &&
+    required(stock.value) === true &&
+    required(type.value) === true &&
+    notOnlyWhiteSpace(type.value) === true
+  )
+})
 
 onMounted(async () => {
   const resProducts = authCall('/products', router)
@@ -72,8 +83,7 @@ function clearForm() {
   description.value = null
   image.value = null
   type.value = null
-  // This should go last?
-  isValid.value = false
+  // isValid.value = false
 }
 
 function fullClearForm() {
@@ -202,7 +212,7 @@ function addTypeToForm(type) {
       v-else
     >
       <template #text>
-        <v-form class="form" v-model="isValid" @submit.prevent="submitForm">
+        <v-form class="form" @submit.prevent="submitForm">
           <div class="form-title">
             {{ isEditing ? `Edit ${productEditing?.name}` : 'Add Product' }}
           </div>
