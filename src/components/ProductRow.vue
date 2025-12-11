@@ -108,8 +108,8 @@ async function stockOne() {
   gap: 15px;
 }
 .product-img {
-  width: 60px;
-  height: 100%;
+  width: auto;
+  height: 75px;
   border-radius: 4px;
 }
 .highlight {
