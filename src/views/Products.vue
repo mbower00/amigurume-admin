@@ -128,12 +128,14 @@ async function submitForm() {
       data = await authCall(`/product/${id}`, router, 'patch', body)
       const index = products.value.findIndex((product) => product.id === id)
       body.id = id
+      body.type = data.type
       addTypeToForm(data.type)
       products.value[index] = body
     } else {
       // add product
       data = await authCall('/product', router, 'post', body)
       body.id = data.id
+      body.type = data.type
       addTypeToForm(data.type)
       products.value.push(body)
     }
