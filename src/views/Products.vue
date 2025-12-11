@@ -210,7 +210,7 @@ function addTypeToForm(type) {
           <v-text-field
             v-model="name"
             label="Name *"
-            :rules="[required notOnlyWhiteSpace]"
+            :rules="[required, notOnlyWhiteSpace]"
             variant="solo"
           ></v-text-field>
           <div class="price-stock-flex">
