@@ -120,18 +120,21 @@ async function submitForm() {
     image_url,
     type: type.value,
   }
+  let data
   try {
     if (isEditing.value) {
       // edit product
       const id = productEditing.value.id
-      await authCall(`/product/${id}`, router, 'patch', body)
+      data = await authCall(`/product/${id}`, router, 'patch', body)
       const index = products.value.findIndex((product) => product.id === id)
       body.id = id
+      addTypeToForm(data.type)
       products.value[index] = body
     } else {
       // add product
-      const { id } = await authCall('/product', router, 'post', body)
-      body.id = id
+      data = await authCall('/product', router, 'post', body)
+      body.id = data.id
+      addTypeToForm(data.type)
       products.value.push(body)
     }
   } catch (error) {
@@ -139,6 +142,13 @@ async function submitForm() {
   } finally {
     formLoading.value = false
     fullClearForm()
+  }
+}
+
+function addTypeToForm(type) {
+  const findType = types.value.findIndex((typeItem) => typeItem === type)
+  if (findType === -1) {
+    type.value.push(type)
   }
 }
 </script>
