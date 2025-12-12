@@ -110,7 +110,8 @@ async function stockOne() {
 .product-img {
   width: auto;
   height: auto;
-  max-width: 200px;
+  max-width: 60px;
+  max-height: 60px;
 }
 .highlight {
   background-color: var(--light-lilac);

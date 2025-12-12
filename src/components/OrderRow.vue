@@ -15,7 +15,9 @@ const quantity = computed(() =>
   prop.order.ordered_products.reduce((quantity, product) => quantity + product.quantity, 0),
 )
 const price = computed(() =>
-  prop.order.ordered_products.reduce((price, product) => price + product.product.price, 0),
+  prop.order.ordered_products
+    .reduce((price, product) => price + product.product.price * product.quantity, 0)
+    .toFixed(2),
 )
 
 async function changeFulfilled() {
@@ -103,6 +105,7 @@ async function deleteOrder() {
           <tr v-for="ordered_product in prop.order.ordered_products">
             <td class="img-td">
               <img
+                v-if="ordered_product.product.image_url"
                 class="product-img"
                 :src="ordered_product.product.image_url"
                 :alt="ordered_product.product.name"
@@ -146,7 +149,9 @@ async function deleteOrder() {
 }
 .product-img {
   height: auto;
-  width: 40px;
+  width: auto;
+  max-width: 40px;
+  max-height: 40px;
   padding: 5px;
 }
 </style>
